@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Заметки команды</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>Заметки команды</h1>
+        <p class="counter" data-testid="counter">Загружаем…</p>
+      </header>
+
+      <form class="add" data-testid="add-form">
+        <input name="text" maxlength="200" placeholder="Что нужно сделать?" aria-label="Текст заметки" required />
+        <button type="submit">Добавить</button>
+      </form>
+      <p class="error" data-testid="error" hidden></p>
+
+      <nav class="filters" aria-label="Фильтр">
+        <button type="button" data-filter="all" class="active">Все</button>
+        <button type="button" data-filter="active">Активные</button>
+        <button type="button" data-filter="done">Сделано</button>
+      </nav>
+
+      <ul class="notes" data-testid="notes"></ul>
+
+      <footer data-testid="footer">Заметки команды</footer>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

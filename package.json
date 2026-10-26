@@ -1,0 +1,17 @@
+{
+  "name": "sdai-notes-web",
+  "version": "1.0.0",
+  "description": "Сайт сервиса «Заметки команды»",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "vite": "^6.0.7"
+  },
+  "packageManager": "pnpm@9.15.4"
+}
