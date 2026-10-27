@@ -1,10 +1,9 @@
-import { counterText, shortDate, statsText, validateText } from "./notes.js"
+import { counterText, shortDate, validateText } from "./notes.js"
 
 const list = document.querySelector("[data-testid=notes]")
 const counter = document.querySelector("[data-testid=counter]")
 const errorBox = document.querySelector("[data-testid=error]")
 const form = document.querySelector("[data-testid=add-form]")
-const footer = document.querySelector("[data-testid=footer]")
 let filter = "all"
 
 async function api(path, init) {
@@ -32,17 +31,6 @@ async function load() {
     showError("")
   } catch (e) {
     showError(`Не удалось загрузить заметки: ${e.message}`)
-  }
-  await loadStats()
-}
-
-/** Сводка по всем заметкам; при ошибке в подвале остаётся прежний текст. */
-async function loadStats() {
-  try {
-    const { done, total, lastNoteAt } = await api("/stats")
-    footer.textContent = statsText(done, total, lastNoteAt)
-  } catch {
-    // сводка необязательна: блок ошибок не трогаем
   }
 }
 
