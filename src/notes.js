@@ -19,6 +19,12 @@ export function shortDate(iso) {
   return new Date(iso).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })
 }
 
+/** Сводка в подвале: «Сделано 1 из 3 · последняя заметка 22 окт.». */
+export function statsText(done, total, lastNoteAt) {
+  if (total === 0 || !lastNoteAt) return "Заметок пока нет"
+  return `Сделано ${done} из ${total} · последняя заметка ${shortDate(lastNoteAt)}`
+}
+
 /** Текст заметки перед отправкой: без пробелов по краям, не длиннее 200. */
 export function validateText(raw) {
   const text = String(raw ?? "").trim()
