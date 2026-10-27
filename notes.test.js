@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { counterText, plural, validateText } from "./src/notes.js"
+import { counterText, plural, statsText, validateText } from "./src/notes.js"
 
 test("счётчик с правильным окончанием", () => {
   assert.equal(counterText(1, 3), "1 активная из 3")
@@ -19,4 +19,11 @@ test("проверка текста заметки", () => {
   assert.deepEqual(validateText("  купить хлеб "), { ok: true, text: "купить хлеб" })
   assert.equal(validateText("   ").ok, false)
   assert.equal(validateText("x".repeat(201)).ok, false)
+})
+
+test("сводка в подвале", () => {
+  const now = new Date("2026-10-27T12:00:00")
+  assert.equal(statsText(1, 3, "2026-10-22T12:00:00", now), "Сделано 1 из 3 · последняя заметка 22 окт.")
+  assert.equal(statsText(1, 3, "2025-10-22T12:00:00", now), "Сделано 1 из 3 · последняя заметка 22 окт. 2025 г.")
+  assert.equal(statsText(0, 0, null, now), "Заметок пока нет")
 })

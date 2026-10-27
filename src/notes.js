@@ -19,6 +19,17 @@ export function shortDate(iso) {
   return new Date(iso).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })
 }
 
+/** Сводка для подвала: «Сделано 1 из 3 · последняя заметка 22 окт.»; год — только не для текущего. */
+export function statsText(done, total, lastCreatedAt, now = new Date()) {
+  if (total === 0) return "Заметок пока нет"
+  const last = new Date(lastCreatedAt)
+  const date =
+    last.getFullYear() === now.getFullYear()
+      ? shortDate(lastCreatedAt)
+      : last.toLocaleDateString("ru-RU", { day: "numeric", month: "short", year: "numeric" })
+  return `Сделано ${done} из ${total} · последняя заметка ${date}`
+}
+
 /** Текст заметки перед отправкой: без пробелов по краям, не длиннее 200. */
 export function validateText(raw) {
   const text = String(raw ?? "").trim()
