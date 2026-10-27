@@ -1,9 +1,10 @@
-import { counterText, shortDate, validateText } from "./notes.js"
+import { counterText, shortDate, statsText, validateText } from "./notes.js"
 
 const list = document.querySelector("[data-testid=notes]")
 const counter = document.querySelector("[data-testid=counter]")
 const errorBox = document.querySelector("[data-testid=error]")
 const form = document.querySelector("[data-testid=add-form]")
+const footer = document.querySelector("[data-testid=footer]")
 let filter = "all"
 
 async function api(path, init) {
@@ -34,6 +35,20 @@ async function load() {
   }
 }
 
+/** Сводка по всем заметкам; при ошибке подвал остаётся как был, без сообщения. */
+async function loadStats() {
+  try {
+    footer.textContent = statsText(await api("/stats"))
+  } catch {
+    // сводка необязательна — список и блок ошибок не трогаем
+  }
+}
+
+/** После изменения заметок обновляем и список, и сводку. */
+async function refresh() {
+  await Promise.all([load(), loadStats()])
+}
+
 function renderNote(note) {
   const li = document.createElement("li")
   li.className = note.done ? "done" : ""
@@ -45,7 +60,7 @@ function renderNote(note) {
   box.setAttribute("aria-label", "Сделано")
   box.addEventListener("change", async () => {
     await api(`/notes/${note.id}`, { method: "PATCH", body: JSON.stringify({ done: box.checked }) })
-    await load()
+    await refresh()
   })
 
   const text = document.createElement("span")
@@ -62,7 +77,7 @@ function renderNote(note) {
   remove.setAttribute("aria-label", "Удалить")
   remove.addEventListener("click", async () => {
     await api(`/notes/${note.id}`, { method: "DELETE" })
-    await load()
+    await refresh()
   })
 
   li.append(box, text, date, remove)
@@ -76,7 +91,7 @@ form.addEventListener("submit", async (event) => {
   try {
     await api("/notes", { method: "POST", body: JSON.stringify({ text: checked.text }) })
     form.reset()
-    await load()
+    await refresh()
   } catch (e) {
     showError(e.message)
   }
@@ -90,4 +105,4 @@ for (const button of document.querySelectorAll("[data-filter]")) {
   })
 }
 
-load()
+refresh()
