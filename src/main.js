@@ -1,12 +1,10 @@
-import { counterText, shortDate, statsText, validateText } from "./notes.js"
+import { counterText, shortDate, validateText } from "./notes.js"
 
 const list = document.querySelector("[data-testid=notes]")
 const counter = document.querySelector("[data-testid=counter]")
 const errorBox = document.querySelector("[data-testid=error]")
 const form = document.querySelector("[data-testid=add-form]")
-const footer = document.querySelector("[data-testid=footer]")
 let filter = "all"
-let statsRequest = 0
 
 async function api(path, init) {
   const res = await fetch(`/api${path}`, {
@@ -25,20 +23,7 @@ function showError(message) {
   errorBox.hidden = !message
 }
 
-/** Сводка всегда по всем заметкам — фильтр в запрос не передаётся. */
-async function loadStats() {
-  const request = ++statsRequest
-  try {
-    const stats = await api("/stats")
-    if (request === statsRequest) footer.textContent = statsText(stats)
-  } catch {
-    // Старые или выдуманные числа не показываем.
-    if (request === statsRequest) footer.textContent = "Сводка недоступна"
-  }
-}
-
 async function load() {
-  const stats = loadStats()
   try {
     const { notes, total, active } = await api(`/notes?filter=${filter}`)
     counter.textContent = counterText(active, total)
@@ -47,7 +32,6 @@ async function load() {
   } catch (e) {
     showError(`Не удалось загрузить заметки: ${e.message}`)
   }
-  await stats
 }
 
 function renderNote(note) {
