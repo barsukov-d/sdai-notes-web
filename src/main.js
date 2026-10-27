@@ -1,12 +1,10 @@
-import { counterText, shortDate, summaryText, validateText } from "./notes.js"
+import { counterText, shortDate, validateText } from "./notes.js"
 
 const list = document.querySelector("[data-testid=notes]")
 const counter = document.querySelector("[data-testid=counter]")
 const errorBox = document.querySelector("[data-testid=error]")
-const footer = document.querySelector("[data-testid=footer]")
 const form = document.querySelector("[data-testid=add-form]")
 let filter = "all"
-let statsRequest = 0
 
 async function api(path, init) {
   const res = await fetch(`/api${path}`, {
@@ -25,20 +23,7 @@ function showError(message) {
   errorBox.hidden = !message
 }
 
-/** Сводка по всем заметкам в подвале; её ошибка не мешает списку. */
-async function loadStats() {
-  const request = ++statsRequest
-  let text
-  try {
-    text = summaryText(await api("/stats"))
-  } catch {
-    text = "Сводка недоступна"
-  }
-  if (request === statsRequest) footer.textContent = text
-}
-
 async function load() {
-  loadStats()
   try {
     const { notes, total, active } = await api(`/notes?filter=${filter}`)
     counter.textContent = counterText(active, total)
